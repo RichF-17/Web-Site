@@ -176,16 +176,17 @@ namespace Shopping.Controllers
             {
                 return NotFound();
             }
-            Country Country = await _context.Countries.FindAsync(id);
-            if(Country==null)
+            Country country = await _context.Countries.FindAsync(id);
+            if(country==null)
             {
                 return NotFound();
             }
+
             StateViewModel model = new()
             {
-                CountryId = Country.Id,
+                CountryId = country.Id,
             };
-            return View();
+            return View(model);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -195,14 +196,14 @@ namespace Shopping.Controllers
             {
                 try
                 {
-                    State state = new State()
+                    State state = new ()
                     {
-                        Cities = new List<City>(),
+                      Cities = new List<City>(),
                       Country = await _context.Countries.FindAsync(model.CountryId),
                       Name = model.Name,
                     };
 
-                    _context.Add(model);
+                    _context.Add(state);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Details), new {Id= model.CountryId});
                 }
